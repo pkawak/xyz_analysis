@@ -23,11 +23,12 @@ for file_name in file_names:
   #ymean = np.mean(y)
   #ystd = np.std(y)
   #y = y/np.max(y)
-  skip=0
   if len(file_names) == 1:
-    ax.plot(2*np.pi/x[skip:], y[skip:])
+    ax.plot(2*np.pi/x, y)
+    ax.scatter(2*np.pi/x, y)
   else:
-    ax.plot(2*np.pi/x[skip:], y[skip:], label=file_name.split('/')[0])
+    ax.plot(2*np.pi/x, y, label=file_name.split('/')[0])
+    ax.scatter(2*np.pi/x, y, label=file_name.split('/')[0])
   #ax.axhline(ymean, x[0], x[-1], c='c')
   #ax.axhline(ymean+ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')
   #ax.axhline(ymean-ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')
