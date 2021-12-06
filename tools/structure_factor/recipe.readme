@@ -1,0 +1,66 @@
+There are two main files here:
+1. calc_sq.py
+
+Read an xyz configuration (or multiple) and computes Sq vs q vector
+The q vector spans -2*pi/lx*n_max to 2*pi/lx*n_max
+Output is .Sq_q_binned.dat and contains q_norm and S(q_norm)
+
+Options are read from options.calc_sq.json:
+Below is an example file:
+{
+  "file_name": "all",
+  "suffix"   : "xyz",
+  "n_max"    : 24,
+  "filt"     : 0,
+  "method"   : 1,
+  "ids"      : [""]
+}
+file_name is either the name of file or all; all computes calc_sq for all files in directory with suffix defined by options file
+suffix    is used along with "all" option
+n_max     defines the maximum q studied (q_max = n_max*pi/l)
+filt      is a bool that defines whether to filter the configuration file by ids variable in options file
+method    is an int that defines which method to use. Use 1 as default
+ids       is only read if filt is 1 and can take on more than one value. For example, if you only want the structure factor to compute on specific molecule ids (defined in first column of xyz file), say 3, CH3 and O2, then ids = ["3", "CH3", "O2"]
+
+Usage:
+- If you want to run over config_1.xyz:
+  bash:~$ ./calc_sq.py config_1.xyz
+  or if you want to use options file, equate file_name to config_1.xyz in file and run:
+  in options.calc_sq.json: 
+    "file_name": "config_1.xyz",
+  bash:~$ ./calc_sq.py options
+- If you want to run over all config files with suffix xyz:
+  in options.calc_sq.json: 
+    "file_name": "all",
+    "suffix"   : "xyz",
+  bash:~$ ./calc_sq.py options
+- To plot for file:
+  bash:~$ ./plotSq_q.py <file_name>.Sq_q_binned.dat
+- To plot for multiple files:
+  bash:~$ ./plotSq_q.py avg.Sq_q_binned.dat
+
+2. calc_sq_2d_avg.py
+
+Same as 1 but here the result is not binned according to q_norm but 3 files are printed, each one averaging over 1 of the 3 dimensions (x, y, z):
+avg.x.y1.z1.Sq_3D.dat
+avg.x1.y.z1.Sq_3D.dat
+avg.x1.y1.z.Sq_3D.dat
+
+Options are read from options.calc_sq_2d_avg.json and is the same as the above file format.
+
+Usage:
+- If you want to run over config_1.xyz:
+  bash:~$ ./calc_sq_2d_avg.py config_1.xyz
+  or if you want to use options file, equate file_name to config_1.xyz in file and run:
+  in options.calc_sq_2d_avg.json: 
+    "file_name": "config_1.xyz",
+  bash:~$ ./calc_sq_2d_avg.py options
+- If you want to run over all config files with suffix xyz:
+  in options.calc_sq_2d_avg.json: 
+    "file_name": "all",
+    "suffix"   : "xyz",
+  bash:~$ ./calc_sq_2d_avg.py options
+- To plot for file:
+  bash:~$ ./run_all_plot_pdfjam.sh <file_name>
+- To plot for multiple files:
+  bash:~$ ./run_all_plot_pdfjam.sh avg

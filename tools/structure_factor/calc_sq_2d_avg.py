@@ -27,7 +27,7 @@ desired_ids = [""]
 if len(sys.argv) >= 2:
   if sys.argv[1] == "options":
 #read options file (options.calc_sq.json)
-    with open("options.calc_sq.json", "r+") as file:
+    with open("options.calc_sq_2d_avg.json", "r+") as file:
       data = json.load(file)
     file_name = data["file_name"]
     if file_name == "all":
