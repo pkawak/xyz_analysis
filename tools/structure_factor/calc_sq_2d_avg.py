@@ -74,20 +74,6 @@ Qy = np.reshape(Qy, sizex*sizey*sizez)
 Qz = np.reshape(Qz, sizex*sizey*sizez)
 Q  = np.vstack((Qx,Qy,Qz)).T
 q = np.ascontiguousarray(Q) # for the purpose of GPU calculation
-
-#for binning later
-q_norm = np.sqrt(q[:,0]**2 + q[:,1]**2 + q[:,2]**2)
-del_q      = 2 * np.pi/lx
-range_low  = del_q
-range_high = del_q * n_max/2.
-num_bins   = n_max/2.
-
-#filter stuff that's not well sampled from now
-range_min  = range_low
-range_max  = range_high + del_q/2
-to_remove = np.where((q_norm > range_max) | (q_norm < range_min))
-q_norm = np.delete(q_norm, to_remove)
-q      = np.delete(q     , to_remove, axis=0)
 num_q  = np.shape(q)[0]
 
 '''
@@ -202,7 +188,6 @@ for filename in file_name.split(':'):
   R = np.loadtxt(filename, skiprows=2, usecols=(1,2,3))
   if filt:
     ids = np.genfromtxt(filename, skip_header=2, usecols=(0,), dtype=str)
-   
     ids_bool = np.array([], dtype=int)
     for desired_id in desired_ids:
       ids_bool = np.append(ids_bool, np.where(ids == desired_id)[0])
@@ -224,35 +209,21 @@ end = (timer() - start)/60
 print('Total time elapsed: ', end, ' minutes')
 Sq_ave = Sq_sum/len(file_name.split(':')) # average the Sq over all the frames
 
-'''
-Bin and average over qnorm
-'''
-#bin stuff
-q_means  = np.arange(1, n_max/2+1)*del_q
-Sq_means = np.zeros(len(q_means))
-count    = np.zeros(len(q_means), dtype=int)
-for i in range(len(q_norm)):
-  bin_ = int(round((q_norm[i]-2*np.pi/lx)/del_q))
-  count[bin_] += 1
-  Sq_means[bin_] += Sq_ave[i]
-for i in range(len(Sq_means)):
-  Sq_means[i] /= count[i]
-
-# plot the curve
-plt.figure(figsize=(6.5,4.88))
-plt.rc('font', size = 12)
-plt.scatter(q_means, Sq_means)
-plt.yscale('log')
-plt.xlabel(r'$|q|$')
-plt.ylabel(r'$S(q)$')
-plt.tight_layout()
-plt.savefig('Structure_factor_vs_q.png',dpi=300)
-
-#np.savetxt('q.dat', q, fmt='%10e')
-#np.savetxt('Sq.dat', Sq_ave, fmt='%10e')
-#np.savetxt('q_binned.dat', q_means, fmt='%10e')
-#np.savetxt('Sq_binned.dat', Sq_means, fmt='%10e')
+import pandas as pd
+#create DataFrame
+df = pd.DataFrame({'qx': q[:,0],
+                   'qy': q[:,1],
+                   'qz': q[:,2],
+                   'Sq': Sq_ave
+                   })
+z_avg = df.groupby(['qx', 'qy']).mean().reset_index()
+y_avg = df.groupby(['qx', 'qz']).mean().reset_index()
+x_avg = df.groupby(['qy', 'qz']).mean().reset_index()
 if len(file_name.split(':')) == 1:
-  np.savetxt(file_name.split(':')[0] + '.Sq_q_binned.dat', np.c_[q_means, Sq_means])
+  z_avg.to_csv(file_name + '.x1.y1.z.Sq_3D.dat', sep=' ', header=False, index=False)
+  y_avg.to_csv(file_name + '.x1.y.z1.Sq_3D.dat', sep=' ', header=False, index=False)
+  x_avg.to_csv(file_name + '.x.y1.z1.Sq_3D.dat', sep=' ', header=False, index=False)
 else:
-  np.savetxt('avg.Sq_q_binned.dat', np.c_[q_means, Sq_means])
+  z_avg.to_csv('avg.x1.y1.z.Sq_3D.dat', sep=' ', header=False, index=False)
+  y_avg.to_csv('avg.x1.y.z1.Sq_3D.dat', sep=' ', header=False, index=False)
+  x_avg.to_csv('avg.x.y1.z1.Sq_3D.dat', sep=' ', header=False, index=False)
