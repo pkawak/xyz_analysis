@@ -9,7 +9,6 @@ adapted by pkawak for MCPC/OPWL config file (.xyz) usage
 
 import sys
 import os
-import freud
 import json
 import numpy as np
 from numba import cuda, njit, float64
