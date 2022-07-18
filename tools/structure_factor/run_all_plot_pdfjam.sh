@@ -1,6 +1,5 @@
 #!/bin/bash
 
-script_name=$0
 script_full_path=$(dirname "$0")
 
 ${script_full_path}/plotIMshow.py ${1}.x.y1.z1.Sq_3D.dat
