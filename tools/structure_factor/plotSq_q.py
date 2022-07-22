@@ -25,10 +25,10 @@ for file_name in file_names:
   #y = y/np.max(y)
   if len(file_names) == 1:
     ax.plot(x, y)
-    ax.scatter(x, y)
+    ax.scatter(x, y, s=2)
   else:
     ax.plot(x, y, label=file_name.split('/')[0])
-    ax.scatter(x, y, label=file_name.split('/')[0])
+    ax.scatter(x, y, s=2)
   #ax.axhline(ymean, x[0], x[-1], c='c')
   #ax.axhline(ymean+ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')
   #ax.axhline(ymean-ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')

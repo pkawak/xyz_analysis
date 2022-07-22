@@ -25,10 +25,10 @@ for file_name in file_names:
   #y = y/np.max(y)
   if len(file_names) == 1:
     ax.plot(2*np.pi/x, y)
-    ax.scatter(2*np.pi/x, y)
+    ax.scatter(2*np.pi/x, y, s=2)
   else:
     ax.plot(2*np.pi/x, y, label=file_name.split('/')[0])
-    ax.scatter(2*np.pi/x, y, label=file_name.split('/')[0])
+    ax.scatter(2*np.pi/x, y, s=2)
   #ax.axhline(ymean, x[0], x[-1], c='c')
   #ax.axhline(ymean+ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')
   #ax.axhline(ymean-ystd*1.96/np.sqrt(len(y)), x[0], x[-1], c='r')
@@ -36,6 +36,7 @@ for file_name in file_names:
   #ax.text(0.7, 1, str(round(ymean, 3)) + " +- " + str(round(ystd*1.96/np.sqrt(len(y)), 3)), fontsize=12, transform=ax.transAxes)
 if len(file_names)>1:
   plt.legend(fontsize=8)
+#ax.set_xlim(0, 1.5)
 ax.set_xlabel('l', fontsize=8)
 ax.set_ylabel('S(q)', fontsize=8)
 ax.tick_params(axis='both', labelsize=8)
