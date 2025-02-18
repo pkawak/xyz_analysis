@@ -1,0 +1,3 @@
+A GitHub repository with analysis files used to analyze XYZ files from molecular simulations.
+
+Documentation pending ...
